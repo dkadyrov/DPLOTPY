@@ -37,7 +37,7 @@ sin_plot.save('Example1')
 ```
 ![Example 1](https://github.com/dkadyrov/DPLOTPY/blob/master/Example/Example1.png)
 
-Create a new plot. Add another curve to the plot:
+Create a new plot. Add curve to plot:
 
 ```Python
 y_cos = np.cos(x)
@@ -68,7 +68,3 @@ all_plot.save('Example3')
 ```
 
 ![Example 3](https://github.com/dkadyrov/DPLOTPY/blob/master/Example/Example3.png)
-=======
-# DPLOTPY
-
-A Python package for DPLOT. Currently under real intense development. 
