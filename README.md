@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # dplotpy
 
 ## About
@@ -68,3 +69,8 @@ all_plot.save('Example3')
 ```
 
 ![Example 3][Example/Example3.png]
+=======
+# DPLOTPY
+
+A Python package for DPLOT. Currently under real intense development. 
+>>>>>>> 1c509347615b254a9f42dda71429a5a9f3e3f943
