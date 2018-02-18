@@ -35,7 +35,7 @@ sin_plot = dp.xyplot(sin_curve, title='Example 1', subtitle='Sine Wave', xlabel=
 # Save the file
 sin_plot.save('Example1')
 ```
-![Example 1](https://github.com/dkadyrov/DPLOTPY/blob/master/Example/Example1.png)
+![Example 1](Example/Example1.png)
 
 Create a new plot. Add curve to plot:
 
@@ -50,7 +50,7 @@ cos_plot.ylabel = 'Amplitude [units]'
 cos_plot.legend = False
 cos_plot.save('Example2')
 ```
-![Example 2](https://github.com/dkadyrov/DPLOTPY/blob/master/Example/Example2.png)
+![Example 2](Example/Example2.png)
 
 Add multiple curves to a plot:
 
@@ -67,4 +67,4 @@ all_plot.legendalight = [0,2]
 all_plot.save('Example3')
 ```
 
-![Example 3](https://github.com/dkadyrov/DPLOTPY/blob/master/Example/Example3.png)
+![Example 3](Example/Example3.png)
