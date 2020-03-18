@@ -3,8 +3,7 @@ class curve(object):
     def __init__(self, xdata, ydata, zdata=None, title='', label='', line='1', symbol='0'):
         self.xdata = xdata
         self.ydata = ydata
-        self.data = [   self.xdata,
-                        self.ydata]
+        self.data = [self.xdata, self.ydata]
         if zdata:
             self.zdata = zdata
             self.data.append(self.zdata)
@@ -36,4 +35,10 @@ class curve(object):
             self.symbol = symbol
         else:
             raise ValueError('Define a symbol style (1-34, 261-269, 284, 288). This can be a string or integer input. For available symbols please visit http://www.dplot.com/help/index.htm?dplotfile.htm')
-    pass
+
+import numpy as np
+
+x = np.linspace(0, 2*np.pi, 100)
+y_sin = np.sin(x)
+
+sin_curve = curve(x, y_sin, title='Sine Wave')

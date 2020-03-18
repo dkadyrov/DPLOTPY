@@ -14,11 +14,11 @@ sin2_curve = dp.curve(x, y_sin2, title='Sine Wave 2')
 sin2_curve.label = 'Sine Wave 2'
 
 # Example 1
-sin_plot = dp.xyplot(sin_curve, title='Example 1', subtitle='Sine Wave', xlabel='Degrees [rad]', ylabel='Amplitude [units]')
+sin_plot = dp.plot(sin_curve, title='Example 1', subtitle='Sine Wave', xlabel='Degrees [rad]', ylabel='Amplitude [units]')
 sin_plot.save('Example1')
 
 # Example 2
-cos_plot = dp.xyplot()
+cos_plot = dp.plot()
 cos_plot.add_curve(cos_curve)
 cos_plot.title = 'Example 2'
 cos_plot.subtitle = 'Example Subtitle'
@@ -28,13 +28,11 @@ cos_plot.legend = False
 cos_plot.save('Example2')
 
 # Example 3
-all_plot = dp.xyplot(sin_curve)
+all_plot = dp.plot(sin_curve)
 all_plot.add_curve(cos_curve)
 all_plot.add_curve(sin2_curve)
 all_plot.title = 'Example 3'
 all_plot.subtitle = 'Example Subtitle'
 all_plot.xlabel = 'Degrees [rad]'
 all_plot.ylabel = 'Amplitude [units]'
-all_plot.legend = [0,1]
-all_plot.legendalight = [0,2]
 all_plot.save('Example3')
