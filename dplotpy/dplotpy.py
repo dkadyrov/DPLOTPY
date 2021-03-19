@@ -114,10 +114,11 @@ class plot(object):
         try:
             self.channel.ConnectTo("DPlot","System")
         except:
+            # DPlot isn't open or some other error occurred. 
             self.server.Shutdown()
             self.server = None
             self.channel = None
-            raise Exception('Could not connect to DPlot. (Is it open?)')
+            return -1
         # open a new file
         num_dims = len(self.curves[0].data)
         if num_dims == 3:
@@ -223,7 +224,7 @@ class plot(object):
                 f.write('ManualScaleY\n')
                 f.write('%f,%f' %(self.ylim[0], self.ylim[1]))
 
-
+'''
 x = np.linspace(0, 2*np.pi, 100)
 y_sin = np.sin(x)
 y_cos = np.cos(x)
@@ -241,3 +242,4 @@ z = x*np.sin(y)
 z_curve = curve(x,y,zdata=z,title='x+sin(y)')
 #plt2 = plot(z_curve)
 #plt2.show()
+'''
