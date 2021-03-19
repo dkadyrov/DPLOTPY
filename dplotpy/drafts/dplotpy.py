@@ -226,11 +226,12 @@ class plot(object):
 
 x = np.linspace(0, 2*np.pi, 100)
 y_sin = np.sin(x)
-y2 = np.cos(x)
+y_cos = np.cos(x)
 
 sin_curve = curve(x, y_sin, title='Sine Wave 2021')
-cos_curve = curve(x,y2,title='Cos Curve',line=3,symbol=3)
-plt = plot(sin_curve)
+cos_curve = curve(x,y_cos,title='Cos Curve',line=3,symbol=3)
+plt = plot(sin_curve,title="Main Title",subtitle='Subtitle',
+           xlabel="x (units)", ylabel="y (units)")
 plt.add_curve(cos_curve)
 plt.show()
 #plt.save("test")
@@ -238,5 +239,5 @@ plt.show()
 y = x
 z = x*np.sin(y)
 z_curve = curve(x,y,zdata=z,title='x+sin(y)')
-plt2 = plot(z_curve)
+#plt2 = plot(z_curve)
 #plt2.show()
