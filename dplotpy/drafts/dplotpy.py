@@ -93,6 +93,18 @@ class plot(object):
         self.curves.append(curve) 
 
     def show(self):
+        """
+        Shows the plot in active DPlot Window. Uses DDE interface - 
+        see "Programmer's Reference" in DPlot help. Currently will plot 2D 
+        curves. It will generate the data points for 3D contour curves but not
+        display them -- this is because error handling must be done
+        to ensure a valid triangular mesh can be generated. 
+
+        Returns
+        -------
+        None.
+
+        """
         #open the DDE channel
         self.server = None
         self.channel = None
@@ -128,7 +140,6 @@ class plot(object):
                 Data[2::num_dims] = curve.zdata.tolist()
             sData = [str(data) for data in Data]
             sOutput = ','.join(([str(curve.xdata.size)] + sData))
-            print('sOut len is {}'.format(len(sOutput)))
             #Select Curve Number
             self.channel.Exec('[SelectCurve('+sCurveNum+')]')
             # Write data
