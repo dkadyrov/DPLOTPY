@@ -7,16 +7,16 @@ class DDE_Channel(object):
         # Open the Server
         self.server = dde.CreateServer()
         self.server.Create("TestClient")
-        self.channel = dde.CreateConversation(s)
+        self.channel = dde.CreateConversation(server)
         
         try:
             self.channel.ConnectTo("DPlot","System")
         except:
-            CloseDPLOTServer()
+            self.CloseDPLOTServer()
             raise Exception('Could not connect to DPlot. (is it open?)')
     
     def __del__(self):
-        CloseDPLOTServer(self.server)
+        self.CloseDPLOTServer()
      
     def CloseDPLOTServer(self):
         self.server.Destroy()
