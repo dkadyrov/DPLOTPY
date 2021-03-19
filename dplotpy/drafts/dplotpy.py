@@ -11,9 +11,7 @@ class curve(object):
 
         self.data = [self.xdata, self.ydata]
 
-        if len(self.zdata) == 0:
-            pass
-        else:
+        if len(self.zdata) != 0:
             self.data.append(self.zdata)
 
         self.title = title
