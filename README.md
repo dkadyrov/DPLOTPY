@@ -4,11 +4,13 @@
 
 This is a Python package to write GRF files, a format readable by [DPLOT](http://www.dplot.com/) - a visual graphing software developed by Hydesoft Computing. This package and its developers currently have no relationship with the DPLOT team or Hydesoft.
 
+It can also write data directly into an open DPlot window using Dynamic-Data Exchange (DDE), which DPlot maintains to work with VBA scripts. If DPlot is open, 2-D curves can be written to a new plot inside DPlot. 
+
 This package was developed after constant requests of my boss to input data into DPLOT for their use. Instead of processing in Python, exporting as a csv, and then importing into DPLOT, I developed this package to expedite the process.
 
 ## Package Dependencies
 
-The package runs on Python 3.7 and requires the CSV package as a dependency.
+The package runs on Python 3.7 and requires the CSV and win32ui packages as a dependency.
 
 ## Examples
 
@@ -68,3 +70,8 @@ all_plot.save('Example3')
 ```
 
 ![Example 3](Example/Example3.png)
+
+Show plots in an active DPlot instance:
+```Python
+all_plot.show()
+```

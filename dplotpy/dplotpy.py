@@ -1,15 +1,17 @@
 import csv 
 import numpy as np
+import win32ui
+import dde
 
 class curve(object):
-    def __init__(self, xdata, ydata, zdata=None, title="", label="", line=1, symbol=0):
+    def __init__(self, xdata, ydata, zdata='', title="", label="", line=1, symbol=0):
         self.xdata = xdata
         self.ydata = ydata
         self.zdata = zdata
 
         self.data = [self.xdata, self.ydata]
 
-        if self.zdata: 
+        if len(self.zdata) != 0:
             self.data.append(self.zdata)
 
         self.title = title
@@ -89,6 +91,105 @@ class plot(object):
 
     def add_curve(self, curve):
         self.curves.append(curve) 
+        
+    def chunks(self,lst, n):
+        """Yield successive n-sized chunks from lst."""
+        for i in range(0, len(lst), n):
+            yield lst[i:i + n]
+
+    def show(self):
+        """
+        Shows the plot in active DPlot Window. Uses DDE interface - 
+        see "Programmer's Reference" in DPlot help. Currently will plot 2D 
+        curves. It will generate the data points for 3D contour curves but not
+        display them -- this is because error handling must be done
+        to ensure a valid triangular mesh can be generated. 
+
+        Returns
+        -------
+        None.
+
+        """
+        #open the DDE channel
+        self.server = None
+        self.channel = None
+        self.server = dde.CreateServer()
+        self.server.Create("TestClient")
+        self.channel = dde.CreateConversation(self.server)        
+        try:
+            self.channel.ConnectTo("DPlot","System")
+        except:
+            # DPlot isn't open or some other error occurred. 
+            self.server.Shutdown()
+            self.server = None
+            self.channel = None
+            return -1
+        # open a new file
+        num_dims = len(self.curves[0].data)
+        if num_dims == 3:
+            self.channel.Exec('[filenew(3)]')
+        else:
+            self.channel.Exec('[filenew()]')
+        # Turn off min-max-mean check until writing is complete
+        self.channel.Exec('[DeferMinMaxCheck(1)]')
+        # Set File Array Sizes
+        self.channel.Exec('[FileArrays(' + str(len(self.curves)) + ',' + str(self.curves[0].xdata.size) +')]')
+        # plot the curves
+        for curve_num,curve in enumerate(self.curves):
+            # check to see if xy or xyz data
+            num_dims = len(curve.data)
+            # Create the output strings for data exchange
+            sCurveNum = str(curve_num+1)
+            #Select Curve Number
+            self.channel.Exec('[SelectCurve('+sCurveNum+')]')
+            Data = [None]*curve.xdata.size*num_dims
+            Data[::num_dims] = curve.xdata.tolist()
+            Data[1::num_dims] = curve.ydata.tolist()
+            if num_dims == 3:
+                Data[2::num_dims] = curve.zdata.tolist()
+            sData = [str(data) for data in Data]
+            if curve.xdata.size > 1000:
+                for lst in self.chunks(sData,2000):
+                    sOutput = ','.join([str(int(len(lst)/2))] + lst )
+                    self.channel.Exec('[XYXY('+sOutput+')]')
+            else:
+                sOutput = ','.join(([str(curve.xdata.size)] + sData))
+                # Write data
+                if num_dims == 3:
+                    self.channel.Exec('[XYZEx(0,'+sOutput+')]')
+                else:
+                    self.channel.Exec('[XYXY('+sOutput+')]')
+            # Write attributes
+            # Legend
+            self.channel.Exec('[Legend('+ sCurveNum+',"'+curve.title +'")]')
+            # Label
+            self.channel.Exec('[CurveLabel('+ sCurveNum+',"'+ curve.label+'")]')
+            # Linetype
+            sCurveLT = str(curve.line)
+            self.channel.Exec('[LineType('+sCurveNum+','+sCurveLT+')]')
+            # Symbol
+            sCurveSymbol = str(curve.symbol)
+            self.channel.Exec('[SymbolType('+sCurveNum+','+sCurveSymbol+')]')
+        '''
+        TODO - XYZ plots. Note that XYZ plots must form a valid triangular
+        mesh. So have to perform error handling to make sure x,y,z form a grid,etc.
+        '''
+        if num_dims == 3:
+            pass
+            #self.channel.Exec('[XYZRegen()]')
+            #self.channel.Exec('[ViewRedraw()]')
+        # Title, Subtitle, Axis Labels
+        self.channel.Exec('[Title1("'+self.title+'")]')
+        self.channel.Exec('[Title2("'+self.subtitle+'")]')
+        self.channel.Exec('[XAxisLabel("'+self.xlabel+'")]')
+        self.channel.Exec('[YAxisLabel("'+self.ylabel+'")]')
+        
+        # Turn back on functionality
+        self.channel.Exec('[DeferMinMaxCheck(0)]')
+        # shutdown the DDE server and cleanup
+        self.server.Shutdown()
+        self.server = None
+        self.channel = None
 
     def save(self, filename):
         filename += ".grf"
@@ -134,10 +235,22 @@ class plot(object):
                 f.write('ManualScaleY\n')
                 f.write('%f,%f' %(self.ylim[0], self.ylim[1]))
 
-
+'''
 x = np.linspace(0, 2*np.pi, 100)
 y_sin = np.sin(x)
+y_cos = np.cos(x)
 
-sin_curve = curve(x, y_sin, title='Sine Wave')
-plt = plot(sin_curve)
-plt.save("test")
+sin_curve = curve(x, y_sin, title='Sine Wave 2021')
+cos_curve = curve(x,y_cos,title='Cos Curve',line=3,symbol=3)
+plt = plot(sin_curve,title="Main Title",subtitle='Subtitle',
+           xlabel="x (units)", ylabel="y (units)")
+plt.add_curve(cos_curve)
+plt.show()
+#plt.save("test")
+
+y = x
+z = x*np.sin(y)
+z_curve = curve(x,y,zdata=z,title='x+sin(y)')
+#plt2 = plot(z_curve)
+#plt2.show()
+'''

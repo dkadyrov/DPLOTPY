@@ -16,6 +16,7 @@ sin2_curve.label = 'Sine Wave 2'
 # Example 1
 sin_plot = dp.plot(sin_curve, title='Example 1', subtitle='Sine Wave', xlabel='Degrees [rad]', ylabel='Amplitude [units]')
 sin_plot.save('Example1')
+sin_plot.show()
 
 # Example 2
 cos_plot = dp.plot()
@@ -26,6 +27,7 @@ cos_plot.xlabel = 'Degrees [rad]'
 cos_plot.ylabel = 'Amplitude [units]'
 cos_plot.legend = False
 cos_plot.save('Example2')
+cos_plot.show()
 
 # Example 3
 all_plot = dp.plot(sin_curve)
@@ -36,3 +38,4 @@ all_plot.subtitle = 'Example Subtitle'
 all_plot.xlabel = 'Degrees [rad]'
 all_plot.ylabel = 'Amplitude [units]'
 all_plot.save('Example3')
+all_plot.show()
