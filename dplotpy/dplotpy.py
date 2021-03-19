@@ -91,6 +91,11 @@ class plot(object):
 
     def add_curve(self, curve):
         self.curves.append(curve) 
+        
+    def chunks(self,lst, n):
+        """Yield successive n-sized chunks from lst."""
+        for i in range(0, len(lst), n):
+            yield lst[i:i + n]
 
     def show(self):
         """
@@ -127,27 +132,33 @@ class plot(object):
             self.channel.Exec('[filenew()]')
         # Turn off min-max-mean check until writing is complete
         self.channel.Exec('[DeferMinMaxCheck(1)]')
-        
+        # Set File Array Sizes
+        self.channel.Exec('[FileArrays(' + str(len(self.curves)) + ',' + str(self.curves[0].xdata.size) +')]')
         # plot the curves
         for curve_num,curve in enumerate(self.curves):
             # check to see if xy or xyz data
             num_dims = len(curve.data)
             # Create the output strings for data exchange
             sCurveNum = str(curve_num+1)
+            #Select Curve Number
+            self.channel.Exec('[SelectCurve('+sCurveNum+')]')
             Data = [None]*curve.xdata.size*num_dims
             Data[::num_dims] = curve.xdata.tolist()
             Data[1::num_dims] = curve.ydata.tolist()
             if num_dims == 3:
                 Data[2::num_dims] = curve.zdata.tolist()
             sData = [str(data) for data in Data]
-            sOutput = ','.join(([str(curve.xdata.size)] + sData))
-            #Select Curve Number
-            self.channel.Exec('[SelectCurve('+sCurveNum+')]')
-            # Write data
-            if num_dims == 3:
-                self.channel.Exec('[XYZEx(0,'+sOutput+')]')
+            if curve.xdata.size > 1000:
+                for lst in self.chunks(sData,2000):
+                    sOutput = ','.join([str(int(len(lst)/2))] + lst )
+                    self.channel.Exec('[XYXY('+sOutput+')]')
             else:
-                self.channel.Exec('[XYXY('+sOutput+')]')
+                sOutput = ','.join(([str(curve.xdata.size)] + sData))
+                # Write data
+                if num_dims == 3:
+                    self.channel.Exec('[XYZEx(0,'+sOutput+')]')
+                else:
+                    self.channel.Exec('[XYXY('+sOutput+')]')
             # Write attributes
             # Legend
             self.channel.Exec('[Legend('+ sCurveNum+',"'+curve.title +'")]')
